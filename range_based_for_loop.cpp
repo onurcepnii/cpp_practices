@@ -14,5 +14,8 @@ int main() {
     
     for(char &c : str)          // mutate
         c = '*';
+
+    for(auto &&c : std::string("temporary"))
+        std::cout << c;
     
 }

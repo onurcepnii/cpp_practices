@@ -34,7 +34,7 @@ public:
 	{
 		std::cout << this << " : " << "BMC::stop()\n";
 	}
-	BMC* clone()override
+	BMC* clone()override	// covariance
 	{
 		return new BMC(*this);
 	}

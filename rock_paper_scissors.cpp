@@ -1,6 +1,6 @@
 #include <iostream>
 
-enum class move {
+enum class moves {
 	Tas,
 	Kagit,
 	Makas
@@ -8,15 +8,15 @@ enum class move {
 
 class Players {
 public:
-	virtual move make_move() = 0;
-	static std::string move_to_str(move move)
+	virtual moves make_move() = 0;
+	static std::string move_to_str(moves move)
 	{
 		switch (move) {
-		case move::Tas:
+		case moves::Tas:
 			return std::string{ "Tas" };
-		case move::Kagit:
+		case moves::Kagit:
 			return std::string{ "Kagit" };
-		case move::Makas:
+		case moves::Makas:
 			return std::string{ "Makas" };
 		}
 	}
@@ -25,11 +25,11 @@ public:
 
 class Computer : public Players {
 public:
-	move computer_move;
-	move make_move()override
+	moves computer_move;
+	moves make_move()override
 	{
 		std::cout << "Computer is making his move..\n";
-		computer_move = static_cast<move>(rand() % 3);
+		computer_move = static_cast<moves>(rand() % 3);
 
 		std::cout << "Computer's move :" << move_to_str(computer_move) << "\n";
 		return computer_move;
@@ -38,15 +38,15 @@ public:
 
 class Player : public Players {
 public:
-	move player_move;
-	move make_move()override
+	moves player_move;
+	moves make_move()override
 	{
 		int player_input{};
-		do{
-		std::cout << "It's your turn. Make your move (Tas=0,Kagit=1, Makas=2) : ";
-		std::cin >> player_input;
+		do {
+			std::cout << "It's your turn. Make your move (Tas=0,Kagit=1, Makas=2) : ";
+			std::cin >> player_input;
 		} while (player_input < 0 || player_input > 2);
-		player_move = static_cast<move>(player_input);
+		player_move = static_cast<moves>(player_input);
 		std::cout << "Your move is " << move_to_str(player_move) << "\n";
 
 		return player_move;
@@ -69,12 +69,12 @@ public:
 		std::cin >> game_count;
 
 		while (game_count) {
-			move player_move = player.make_move();
-			move computer_move = computer.make_move();
+			moves player_move = player.make_move();
+			moves computer_move = computer.make_move();
 			std::cout << who_wins(this, computer_move, player_move) << "\n";
 			//std::cout << who_wins(player.make_move(), computer.make_move()); // Ambiguity: It depends on the compiler which argument is called first.
 			std::cout << "Stats = Computer(" << computer_score << ")" << " Player(" << player_score << ")";
-			std::cout <<",  " << --game_count << " games left!\n\n";
+			std::cout << ",  " << --game_count << " games left!\n\n";
 		}
 
 		std::cout << "TOTAL RESULTS  :  ";
@@ -87,12 +87,12 @@ public:
 
 
 	}
-	friend std::string who_wins(Game* game_obj,move computer, move player);
-	
+	friend std::string who_wins(Game* game_obj, moves computer, moves player);
+
 };
 
 
-std::string who_wins(Game* game_obj, move computer, move player)
+std::string who_wins(Game* game_obj, moves computer, moves player)
 {
 	std::string player_wins{ "Player won!\n" };
 	std::string computer_wins{ "Computer won\n" };
@@ -101,32 +101,32 @@ std::string who_wins(Game* game_obj, move computer, move player)
 		return std::string{ "No one wins\n" };
 
 	switch (computer) {
-	case move::Tas:
-		if (player == move::Kagit) {
+	case moves::Tas:
+		if (player == moves::Kagit) {
 			game_obj->player_score++;
 			return player_wins;
 		}
-		else if (player == move::Makas) {
+		else if (player == moves::Makas) {
 			game_obj->computer_score++;
 			return computer_wins;
 		}
 		break;
-	case move::Kagit:
-		if (player == move::Tas) {
+	case moves::Kagit:
+		if (player == moves::Tas) {
 			game_obj->computer_score++;
 			return computer_wins;
 		}
-		else if (player == move::Makas) {
+		else if (player == moves::Makas) {
 			game_obj->player_score++;
 			return player_wins;
 		}
 		break;
-	case move::Makas:
-		if (player == move::Kagit) {
+	case moves::Makas:
+		if (player == moves::Kagit) {
 			game_obj->computer_score++;
 			return computer_wins;
 		}
-		else if (player == move::Tas) {
+		else if (player == moves::Tas) {
 			game_obj->player_score++;
 			return player_wins;
 		}

@@ -94,9 +94,6 @@ public:
 
 std::string who_wins(Game* game_obj, moves computer, moves player)
 {
-	std::string player_wins{ "Player won!\n" };
-	std::string computer_wins{ "Computer won\n" };
-
 	if (computer == player)
 		return std::string{ "No one wins\n" };
 
@@ -104,33 +101,32 @@ std::string who_wins(Game* game_obj, moves computer, moves player)
 	case moves::Tas:
 		if (player == moves::Kagit) {
 			game_obj->player_score++;
-			return player_wins;
+			return "Player won!\n";
 		}
 		else if (player == moves::Makas) {
 			game_obj->computer_score++;
-			return computer_wins;
+			return "Computer won\n";
 		}
 		break;
 	case moves::Kagit:
 		if (player == moves::Tas) {
 			game_obj->computer_score++;
-			return computer_wins;
+			return "Computer won\n";
 		}
 		else if (player == moves::Makas) {
 			game_obj->player_score++;
-			return player_wins;
+			return "Player won!\n";
 		}
 		break;
 	case moves::Makas:
 		if (player == moves::Kagit) {
 			game_obj->computer_score++;
-			return computer_wins;
+			return "Computer won\n";
 		}
 		else if (player == moves::Tas) {
 			game_obj->player_score++;
-			return player_wins;
+			return "Player won!\n";
 		}
-		break;
 	}
 }
 

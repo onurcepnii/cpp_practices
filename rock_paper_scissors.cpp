@@ -7,7 +7,7 @@ enum class moves {
 };
 
 class Players {
-public:
+protected:
 	virtual moves make_move() = 0;
 	static std::string move_to_str(moves move)
 	{
@@ -20,11 +20,10 @@ public:
 			return std::string{ "Makas" };
 		}
 	}
-
 };
 
 class Computer : public Players {
-public:
+private:
 	moves computer_move;
 	moves make_move()override
 	{
@@ -34,10 +33,11 @@ public:
 		std::cout << "Computer's move :" << move_to_str(computer_move) << "\n";
 		return computer_move;
 	}
+	friend class Game;
 };
 
 class Player : public Players {
-public:
+private:
 	moves player_move;
 	moves make_move()override
 	{
@@ -51,27 +51,68 @@ public:
 
 		return player_move;
 	}
+	friend class Game;
 };
+
 class Game {
 private:
 	Player player;
 	Computer computer;
 	int game_count;
-
-public:
 	int player_score = 0;
 	int computer_score = 0;
 
+	const char* who_wins(moves computer, moves player)
+	{
+
+		if (computer == player)
+			return "No one wins\n";
+
+		switch (computer) {
+		case moves::Tas:
+			if (player == moves::Kagit) {
+				player_score++;
+				return "Player won!\n";
+			}
+			else if (player == moves::Makas) {
+				computer_score++;
+				return "Computer won\n";
+			}
+			break;
+		case moves::Kagit:
+			if (player == moves::Tas) {
+				computer_score++;
+				return "Computer won\n";
+			}
+			else if (player == moves::Makas) {
+				player_score++;
+				return "Player won!\n";
+			}
+			break;
+		case moves::Makas:
+			if (player == moves::Kagit) {
+				computer_score++;
+				return "Computer won\n";
+			}
+			else if (player == moves::Tas) {
+				player_score++;
+				return "Player won!\n";
+			}
+			break;
+		}
+	}
+
+public:
 	void start_game()
 	{
-		srand(time(0));
+		srand(time(nullptr));
 		std::cout << "How many turns you want to play? : ";
 		std::cin >> game_count;
 
 		while (game_count) {
 			moves player_move = player.make_move();
 			moves computer_move = computer.make_move();
-			std::cout << who_wins(this, computer_move, player_move) << "\n";
+			std::cout << who_wins(computer_move, player_move) << "\n";
 			//std::cout << who_wins(player.make_move(), computer.make_move()); // Ambiguity: It depends on the compiler which argument is called first.
 			std::cout << "Stats = Computer(" << computer_score << ")" << " Player(" << player_score << ")";
 			std::cout << ",  " << --game_count << " games left!\n\n";
@@ -84,53 +125,8 @@ public:
 			std::cout << "Computer Won!\n";
 		else if (player_score == computer_score)
 			std::cout << "The game ended in a draw.\n";
-
-
 	}
-	friend std::string who_wins(Game* game_obj, moves computer, moves player);
-
 };
-
-
-std::string who_wins(Game* game_obj, moves computer, moves player)
-{
-	if (computer == player)
-		return std::string{ "No one wins\n" };
-
-	switch (computer) {
-	case moves::Tas:
-		if (player == moves::Kagit) {
-			game_obj->player_score++;
-			return "Player won!\n";
-		}
-		else if (player == moves::Makas) {
-			game_obj->computer_score++;
-			return "Computer won\n";
-		}
-		break;
-	case moves::Kagit:
-		if (player == moves::Tas) {
-			game_obj->computer_score++;
-			return "Computer won\n";
-		}
-		else if (player == moves::Makas) {
-			game_obj->player_score++;
-			return "Player won!\n";
-		}
-		break;
-	case moves::Makas:
-		if (player == moves::Kagit) {
-			game_obj->computer_score++;
-			return "Computer won\n";
-		}
-		else if (player == moves::Tas) {
-			game_obj->player_score++;
-			return "Player won!\n";
-		}
-	}
-}
-
-
 
 int main()
 {
